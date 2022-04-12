@@ -1,0 +1,10 @@
+.editRatingButton{
+    opacity: 1;
+    /* margin-left: auto; */
+    position: absolute;
+    right: 0;
+    bottom: 0;
+ }
+ /* td:hover > .editRatingButton{
+    opacity: 1;
+ }   */
