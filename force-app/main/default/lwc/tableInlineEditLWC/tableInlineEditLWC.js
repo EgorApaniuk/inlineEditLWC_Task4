@@ -11,13 +11,18 @@ import RATING_FIELD from '@salesforce/schema/Account.Rating';
 
 const COLUMNS = [
     {label: 'Name', fieldName: 'Name', type: 'text', editable: true},
-    {label: 'Rating', fieldName: 'Rating', type: 'customCell'},     // custom data type "customCell"    
+    {   label: 'Rating', 
+        fieldName: 'Rating', 
+        type: 'customCell',
+        typeAttributes: { recordId: {fieldName: ID_FIELD.fieldApiName},
+                          value: {fieldName: RATING_FIELD.fieldApiName} }
+    }, 
     {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', 
     typeAttributes: {iconName: 'utility:delete', title: 'Delete', onclick:'handleDelete'}}
 ];
 
 export default class TableInlineEditLWC extends LightningElement {
-    @track data; //что будет если убрать @track???
+    @track data;
     columns = COLUMNS;
     wiredAccounts;
 
@@ -33,7 +38,14 @@ export default class TableInlineEditLWC extends LightningElement {
             console.log(error);
         }
     }
+
+    handleFocusLost(){
+        console.log("FOCUS LOST EVENT CATCHED IN MAIN PARENT COMPONENT");
+    }
     
+    handleUnableButtonsEvent(){
+        console.log("EVENT CATCHED");
+    }
     handleDelete(){
         console.log("delete pushed");
     }

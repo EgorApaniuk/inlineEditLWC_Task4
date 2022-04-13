@@ -3,6 +3,8 @@
         hide-checkbox-column="true" 
         key-field="=Id" 
         data={data} 
-        columns={columns}>
-    </c-custom-datatable>
+        columns={columns}
+        onunablebuttonsevent={handleUnableButtonsEvent}
+        onfocuslost={handleFocusLost}
+        ></c-custom-datatable>
 </template>

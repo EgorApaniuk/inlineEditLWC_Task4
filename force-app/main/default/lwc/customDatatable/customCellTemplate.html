@@ -1,22 +1,6 @@
-<!-- <template if:false={editRatingButtonClicked}>
-    <div class="rating">{throwRating}</div>
-</template> -->
-
-
-
 <template>
-        <div class="rating">{value}</div>
-
-        <template if:true={editRatingButtonClicked}>
-            <select onkeyup={handleEnterRating} onblur={handleFocusLost} class="select">
-                <option value="">--None--</option>
-                <option value="Hot">Hot</option>
-                <option value="Warm">Warm</option>
-                <option value="Cold">Cold</option>
-            </select>
-        </template>
-        
-        <lightning-button-icon class="editRatingButton" onclick={handleEditRating}
-        icon-name="utility:edit"  variant="bare" alternative-text="Edit" title="Edit">
-        </lightning-button-icon>
+        <c-custom-cell
+        show-rating={value}
+        record-id={typeAttributes.recordId}
+        ></c-custom-cell>
 </template>

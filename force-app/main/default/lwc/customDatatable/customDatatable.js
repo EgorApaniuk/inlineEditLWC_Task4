@@ -9,4 +9,9 @@ export default class CustomDatatable extends LightningDatatable {
             typeAttributes: ['recordId', 'rating']
         }
     };
+    
+    // handleFocusLost(){
+    //     console.log("EVENT CATCHED IN CUSTOM DATATABLE");
+    // }
+    
 }

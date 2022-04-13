@@ -1,0 +1,18 @@
+<template>
+    <template if:false={editRatingButtonClicked}>
+        <div class="rating">{showRating}</div>
+    </template>
+
+        <template if:true={editRatingButtonClicked}>
+            <select onblur={handleFocusLostEvent} class="select">
+                <option value="">--None--</option>
+                <option value="Hot">Hot</option>
+                <option value="Warm">Warm</option>
+                <option value="Cold">Cold</option>
+            </select>
+        </template>
+        
+        <lightning-button-icon class="editRatingButton" onclick={handleEditRating}
+        icon-name="utility:edit"  variant="bare" alternative-text="Edit" title="Edit">
+        </lightning-button-icon>
+</template>
