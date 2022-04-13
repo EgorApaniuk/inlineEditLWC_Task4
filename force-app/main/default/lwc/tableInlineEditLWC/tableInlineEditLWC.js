@@ -42,9 +42,9 @@ export default class TableInlineEditLWC extends LightningElement {
     handleFocusLost(){
         console.log("FOCUS LOST EVENT CATCHED IN MAIN PARENT COMPONENT");
     }
-    
+
     handleUnableButtonsEvent(){
-        console.log("EVENT CATCHED");
+        console.log("UNABLE BUTTONS EVENT CATCHED");
     }
     handleDelete(){
         console.log("delete pushed");

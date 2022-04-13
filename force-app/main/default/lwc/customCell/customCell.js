@@ -18,7 +18,7 @@ export default class CustomCell extends LightningElement {
     handleEditRating() {
         console.log("edit rating button pushed");
         this.editRatingButtonClicked = true; // show rating select, hide rating text
-        // this.unableButtonsMessage();
+        this.unableButtonsMessage();
     }
 
     unableButtonsMessage() {
@@ -27,7 +27,6 @@ export default class CustomCell extends LightningElement {
             bubbles: true
         });
         this.dispatchEvent(unableButtonsEvent);
-        console.log("unable buttons event dispatched");
     }
 
     handleFocusLostEvent() {
@@ -37,6 +36,5 @@ export default class CustomCell extends LightningElement {
             bubbles: true
         });
         this.dispatchEvent(focuslost);
-        console.log("focuslost Dispatched");
     }
 }
