@@ -6,7 +6,7 @@ export default class CustomDatatable extends LightningDatatable {
     static customTypes = {
         customCell: {
             template: customCellTemplate,
-            typeAttributes: ['recordId', 'rating']
+            typeAttributes: ['recordId', 'rating', 'showEdit']
         }
     };
     

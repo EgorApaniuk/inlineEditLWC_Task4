@@ -9,22 +9,47 @@ import ID_FIELD from '@salesforce/schema/Account.Id';
 import NAME_FIELD from '@salesforce/schema/Account.Name';
 import RATING_FIELD from '@salesforce/schema/Account.Rating';
 
-const COLUMNS = [
-    {label: 'Name', fieldName: 'Name', type: 'text', editable: true},
-    {   label: 'Rating', 
-        fieldName: 'Rating', 
-        type: 'customCell',
-        typeAttributes: { recordId: {fieldName: ID_FIELD.fieldApiName},
-                          value: {fieldName: RATING_FIELD.fieldApiName} }
-    }, 
-    {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', 
-    typeAttributes: {iconName: 'utility:delete', title: 'Delete', onclick:'handleDelete'}}
-];
+import { publish, MessageContext } from 'lightning/messageService';
+import SAMPLEMC from '@salesforce/messageChannel/SampleMessageChannel__c';
 
 export default class TableInlineEditLWC extends LightningElement {
+
+    @wire(MessageContext)
+    messageContext;
+
     @track data;
-    columns = COLUMNS;
     wiredAccounts;
+    showEdit = true; // by default edit visible
+    receivedId;
+
+    columnsEditable = [
+        {label: 'Name', fieldName: 'Name', type: 'text', editable: true},
+        {   label: 'Rating', 
+            fieldName: 'Rating', 
+            type: 'customCell',
+            typeAttributes: {recordId: {fieldName: ID_FIELD.fieldApiName},
+                             value: {fieldName: RATING_FIELD.fieldApiName},
+                             showEdit: true
+                            }
+        }, 
+        {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', 
+        typeAttributes: {iconName: 'utility:delete', title: 'Delete', onclick:'handleDelete'}}
+    ];
+
+    columnsNonEditable = [
+        {label: 'Name', fieldName: 'Name', type: 'text', editable: false},
+        {   label: 'Rating', 
+            fieldName: 'Rating', 
+            type: 'customCell',
+            typeAttributes: {recordId: {fieldName: ID_FIELD.fieldApiName},
+                             value: {fieldName: RATING_FIELD.fieldApiName},
+                             showEdit: false,
+                            }
+        }, 
+        {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', 
+        typeAttributes: {iconName: 'utility:delete', title: 'Delete', onclick:'handleDelete'}}
+    ];
+
 
     @wire(getAccounts)
     refreshWiredAccounts(value){
@@ -43,10 +68,26 @@ export default class TableInlineEditLWC extends LightningElement {
         console.log("FOCUS LOST EVENT CATCHED IN MAIN PARENT COMPONENT");
     }
 
-    handleUnableButtonsEvent(){
+    handleUnableButtonsEvent(event){
         console.log("UNABLE BUTTONS EVENT CATCHED");
+        this.receivedId = event.detail.id;
+        console.log("полученное id "+this.receivedId);
+        this.showEdit = false;
+        console.log(this.showEdit);
+        this.template.querySelector('[data-id=\'' + this.receivedId + '\']')./* showSelect */this.editRatingButtonClicked = true;
     }
+
     handleDelete(){
         console.log("delete pushed");
+    }
+
+    handleClick(){
+        const message = {
+            recordId: '001xx000003NGSFAA4',
+            message : "YEET",
+            source: "LWC",
+            recordData: {accountName: 'Burlington Textiles Corp of America'}
+        };
+        publish(this.messageContext, SAMPLEMC, message);
     }
 }

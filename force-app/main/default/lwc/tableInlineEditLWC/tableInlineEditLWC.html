@@ -1,10 +1,28 @@
 <template>
+    <div class="slds-m-around_medium">
+        <p>MessageChannel: SampleMessageChannel</p>
+        <br>
+        <lightning-button label="Publish" variant="brand" onclick={handleClick}></lightning-button>
+    </div>
+    <template if:true={showEdit}>
     <c-custom-datatable 
         hide-checkbox-column="true" 
         key-field="=Id" 
         data={data} 
-        columns={columns}
+        columns={columnsEditable}
+        onunablebuttonsevent={handleUnableButtonsEvent}
+        onfocuslost={handleFocusLost}
+        ></c-custom-datatable>  
+    </template>
+
+    <template if:false={showEdit}>
+        <c-custom-datatable 
+        hide-checkbox-column="true" 
+        key-field="=Id" 
+        data={data} 
+        columns={columnsNonEditable}
         onunablebuttonsevent={handleUnableButtonsEvent}
         onfocuslost={handleFocusLost}
         ></c-custom-datatable>
+    </template>
 </template>

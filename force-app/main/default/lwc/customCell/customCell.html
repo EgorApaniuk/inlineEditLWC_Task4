@@ -1,18 +1,47 @@
 <template>
+    <div class="slds-m-around_medium">
+      <lightning-button
+        label="Subscribe"
+        variant="brand"
+        disabled={isDisabled}
+        onclick={subscribeMC}
+      >
+      </lightning-button>
+      <lightning-button
+        label="Unsubscribe"
+        variant="destructive"
+        disabled={isDisabledUnsb}
+        onclick={unsubscribeMC}
+      >
+      </lightning-button>
+      <textarea
+        id="receivedMessageTextArea"
+        style="width: 435px;height: 200px;"
+        class="textareaReceivedMessage"
+        rows="7"
+        disabled
+      >{receivedMessage}</textarea
+      >
+    </div>
+
+
+
     <template if:false={editRatingButtonClicked}>
         <div class="rating">{showRating}</div>
     </template>
 
-        <template if:true={editRatingButtonClicked}>
-            <select onblur={handleFocusLostEvent} class="select">
-                <option value="">--None--</option>
-                <option value="Hot">Hot</option>
-                <option value="Warm">Warm</option>
-                <option value="Cold">Cold</option>
-            </select>
-        </template>
-        
-        <lightning-button-icon class="editRatingButton" onclick={handleEditRating}
-        icon-name="utility:edit"  variant="bare" alternative-text="Edit" title="Edit">
+    <template if:true={editRatingButtonClicked}>
+        <select onblur={handleFocusLostEvent} class="select">
+            <option value="">--None--</option>
+            <option value="Hot">Hot</option>
+            <option value="Warm">Warm</option>
+            <option value="Cold">Cold</option>
+        </select>
+    </template>
+
+    <template if:true={showEdit}>
+        <lightning-button-icon class="editRatingButton" onclick={handleEditRating} icon-name="utility:edit"
+            variant="bare" alternative-text="Edit" title="Edit">
         </lightning-button-icon>
+    </template>
 </template>
