@@ -10,7 +10,9 @@
         columns={columns}
         onunablebuttonsevent={handleUnableButtonsEvent}
         onfocuslost={handleFocusLost}
+        onrowaction={handleRowAction}
         ></c-custom-datatable>  
+        
         <template if:true={openFooter}>
             <footer class="slds-modal__footer">
                 <div class="cancel-save">

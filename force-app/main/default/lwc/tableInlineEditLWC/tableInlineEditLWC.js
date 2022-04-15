@@ -35,8 +35,8 @@ export default class TableInlineEditLWC extends LightningElement {
                              showEdit: true
                             }
         }, 
-        {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', 
-        typeAttributes: {iconName: 'utility:delete', title: 'Delete', onclick:'handleDelete'}}
+        {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', name: 'delete',
+        typeAttributes: {iconName: 'utility:delete', title: 'Delete'}}
     ];
 
     @wire(getAccounts)
@@ -53,6 +53,11 @@ export default class TableInlineEditLWC extends LightningElement {
         }
     }
 
+
+    handleRefreshTable() { // for immidiate table refresh after deleting row
+        refreshApex(this.wiredAccounts);
+    }
+    
     handleFocusLost(event){
         console.log("FOCUS LOST EVENT CATCHED IN MAIN PARENT COMPONENT");
         this.receivedDraft = event.detail.draft;
@@ -93,31 +98,85 @@ export default class TableInlineEditLWC extends LightningElement {
 
     handleSave() { 
         console.log("savePusheed");
-        this.openFooter = false;
+        const fields = {};
+        fields[ID_FIELD.fieldApiName] = this.receivedId;
+        fields[RATING_FIELD.fieldApiName] = this.receivedDraft;
+        const recordInput = { fields };
+
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Saved successfully',
+                        variant: 'success'
+                    })
+                )
+                this.handleRefreshTable();
+            }).
+            catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Deletion failed',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+        this.openFooter = false;  
+
+        const message = {
+            blockButtons : false
+        };
+        publish(this.messageContext, SAMPLEMC, message);
     }
 
     handleCancel() {
-        console.log("cancel Pusheed");
         this.openFooter = false;
         const message = {
             cancel: true,
             id: this.receivedId,
-            stockRating: this.dataArray[this.indexVar].Rating
+            stockRating: this.dataArray[this.indexVar].Rating,
+            blockButtons : false
         };
         publish(this.messageContext, SAMPLEMC, message);
-        console.log("cancel message published ");
-
         this.receivedDraft = [];
-
-        // this.workingWithRating ? (
-        //     this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwRating = this.dataArray[this.indexVar].Rating
-        // ) : (
-        //     this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwName = this.dataArray[this.indexVar].Name
-        // );
-
         // changeBackgroudColorToDefault
     }
 
+
+    
+    handleRowAction(event){
+        const action = event.detail.action;
+        const row = event.detail.row;    
+        console.log("handleRowAction", JSON.stringify(action), JSON.stringify(row));
+        action.title == 'Delete' ? this.handleDelete(row) : null;
+    }
+
+    handleDelete(row) {
+        console.log("handleDelete started");
+        console.log("acc to delete id is: ", row.Id);
+        deleteAccount({ accountId: row.Id }).then(() => {
+            this.handleRefreshTable();
+        }).then(() => {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Success',
+                    message: 'deleted successfully',
+                    variant: 'success'
+                })
+            )
+
+        }).catch(error => {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error updating or reloading record',
+                    message: 'error.body.message',
+                    variant: 'error'
+                })
+            );
+        });
+    }
 
 
     

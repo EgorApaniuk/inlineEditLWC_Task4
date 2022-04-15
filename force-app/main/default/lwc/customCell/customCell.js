@@ -45,7 +45,6 @@ export default class CustomCell extends LightningElement {
                 message.blockButtons == false ? this.isDisabledEdit = false : null;
                 message.changes ? this.handleChanges(message) : null;
                 message.changes == false ?  this.handleStatusQuo(): null;
-                // this.handleChanges(message);
             },
             { scope: APPLICATION_SCOPE }
         );
@@ -87,24 +86,12 @@ export default class CustomCell extends LightningElement {
     }
 
     handleChanges(message) {
-
-        // // this.template.querySelector('[data-id=\'' + this.receivedId + '\']').editRatingButtonClicked = false;
         if (message.id == this.recordId) {
             console.log("handleChanges in CustomCell");
+            // this.changeBackgroundColor();
             this.editRatingButtonClicked = false;
             this.showRating = message.draft;
         }
-
-        //     console.log('.select = ', this.template.querySelector('.select'));
-        //     console.log('edit rating = ', this.editRatingButtonClicked);
-        //     let tempRatingVar = this.template.querySelector('.select').value;
-        //     console.log(" this.changeBackgroundColor();");
-        //     this.editRatingButtonClicked = false;
-        //     this.showRating = tempRatingVar;
-        // }
-        // else {
-        //     console.log("handling no changes");
-        // }
     }
 
 
