@@ -1,28 +1,26 @@
 <template>
     <div class="slds-m-around_medium">
-        <p>MessageChannel: SampleMessageChannel</p>
-        <br>
-        <lightning-button label="Publish" variant="brand" onclick={handleClick}></lightning-button>
+        <lightning-button label="включить все едиты" variant="brand" onclick={handleClick}></lightning-button>
     </div>
-    <template if:true={showEdit}>
+    
     <c-custom-datatable 
         hide-checkbox-column="true" 
         key-field="=Id" 
         data={data} 
-        columns={columnsEditable}
+        columns={columns}
         onunablebuttonsevent={handleUnableButtonsEvent}
         onfocuslost={handleFocusLost}
         ></c-custom-datatable>  
-    </template>
-
-    <template if:false={showEdit}>
-        <c-custom-datatable 
-        hide-checkbox-column="true" 
-        key-field="=Id" 
-        data={data} 
-        columns={columnsNonEditable}
-        onunablebuttonsevent={handleUnableButtonsEvent}
-        onfocuslost={handleFocusLost}
-        ></c-custom-datatable>
-    </template>
+        <template if:true={openFooter}>
+            <footer class="slds-modal__footer">
+                <div class="cancel-save">
+                    <button class="slds-button slds-button_neutral" onclick={handleCancel}>
+                        Cancel
+                    </button>
+                    <button class="slds-button slds-button_brand" onclick={handleSave}>
+                        Save
+                    </button>   
+                </div>
+            </footer>
+        </template>
 </template>

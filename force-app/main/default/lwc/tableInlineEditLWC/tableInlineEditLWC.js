@@ -19,10 +19,13 @@ export default class TableInlineEditLWC extends LightningElement {
 
     @track data;
     wiredAccounts;
-    showEdit = true; // by default edit visible
     receivedId;
+    receivedDraft;
+    dataArray;
+    indexVar;
+    openFooter;
 
-    columnsEditable = [
+    columns = [
         {label: 'Name', fieldName: 'Name', type: 'text', editable: true},
         {   label: 'Rating', 
             fieldName: 'Rating', 
@@ -36,57 +39,91 @@ export default class TableInlineEditLWC extends LightningElement {
         typeAttributes: {iconName: 'utility:delete', title: 'Delete', onclick:'handleDelete'}}
     ];
 
-    columnsNonEditable = [
-        {label: 'Name', fieldName: 'Name', type: 'text', editable: false},
-        {   label: 'Rating', 
-            fieldName: 'Rating', 
-            type: 'customCell',
-            typeAttributes: {recordId: {fieldName: ID_FIELD.fieldApiName},
-                             value: {fieldName: RATING_FIELD.fieldApiName},
-                             showEdit: false,
-                            }
-        }, 
-        {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', 
-        typeAttributes: {iconName: 'utility:delete', title: 'Delete', onclick:'handleDelete'}}
-    ];
-
-
     @wire(getAccounts)
-    refreshWiredAccounts(value){
+    refreshWiredAccounts(value) {
         this.wiredAccounts = value;
         const {data, error} = value;
-        if(data){
+        if (data) {
             this.data=data;
+            this.dataArray = data;
             console.log(JSON.stringify(data));
         }
-        else if (error) {  //ensert tost event here
+        else if (error) {  //ensert toast event here
             console.log(error);
         }
     }
 
-    handleFocusLost(){
+    handleFocusLost(event){
         console.log("FOCUS LOST EVENT CATCHED IN MAIN PARENT COMPONENT");
-    }
-
-    handleUnableButtonsEvent(event){
-        console.log("UNABLE BUTTONS EVENT CATCHED");
+        this.receivedDraft = event.detail.draft;
+        console.log("draft = " + this.receivedDraft);
         this.receivedId = event.detail.id;
-        console.log("полученное id "+this.receivedId);
-        this.showEdit = false;
-        console.log(this.showEdit);
-        this.template.querySelector('[data-id=\'' + this.receivedId + '\']')./* showSelect */this.editRatingButtonClicked = true;
+        this.indexFind();
+        this.checkRating();
+        
+    }
+    
+    indexFind() {
+        this.indexVar = this.dataArray.findIndex((array) => {
+            return array.Id == this.receivedId;
+        });
+        console.log(this.indexVar);
     }
 
-    handleDelete(){
-        console.log("delete pushed");
+    checkRating() {
+        if (this.receivedDraft == this.dataArray[this.indexVar].Rating                               // NO changes in rating  
+            || (this.dataArray[this.indexVar].Rating == undefined && this.receivedDraft == "")) {    // or change from None to None 
+            const message = {
+                changes: false,
+            };
+            publish(this.messageContext, SAMPLEMC, message);
+        } else { 
+            console.log("there ARE changes in rating");    
+            const message = {
+                changes: true,
+                id : this.receivedId,
+                draft : this.receivedDraft
+            };
+            publish(this.messageContext, SAMPLEMC, message); 
+            this.openFooter = true;
+        }
     }
 
-    handleClick(){
+
+
+    handleSave() { 
+        console.log("savePusheed");
+        this.openFooter = false;
+    }
+
+    handleCancel() {
+        console.log("cancel Pusheed");
+        this.openFooter = false;
         const message = {
-            recordId: '001xx000003NGSFAA4',
-            message : "YEET",
-            source: "LWC",
-            recordData: {accountName: 'Burlington Textiles Corp of America'}
+            cancel: true,
+            id: this.receivedId,
+            stockRating: this.dataArray[this.indexVar].Rating
+        };
+        publish(this.messageContext, SAMPLEMC, message);
+        console.log("cancel message published ");
+
+        this.receivedDraft = [];
+
+        // this.workingWithRating ? (
+        //     this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwRating = this.dataArray[this.indexVar].Rating
+        // ) : (
+        //     this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwName = this.dataArray[this.indexVar].Name
+        // );
+
+        // changeBackgroudColorToDefault
+    }
+
+
+
+    
+    handleClick() {
+        const message = {
+            blockButtons : false
         };
         publish(this.messageContext, SAMPLEMC, message);
     }
