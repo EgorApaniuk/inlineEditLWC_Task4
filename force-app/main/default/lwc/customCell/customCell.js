@@ -1,4 +1,4 @@
-import { LightningElement, wire } from "lwc";
+import { LightningElement, wire, api } from "lwc";
 import {
     publish,
     subscribe,
@@ -12,8 +12,8 @@ export default class CustomCell extends LightningElement {
     @wire(MessageContext) // what is message context?
     messageContext;
 
-    recordId;
-    showRating;
+    @api recordId;
+    @api showRating;
     editRatingButtonClicked = false;
     isDisabledEdit = false;
     ratingTempStorage;
@@ -32,7 +32,7 @@ export default class CustomCell extends LightningElement {
             this.messageContext,
             SAMPLEMC,
             message => {
-                message.paintCellToYellow ? this.template.querySelector(".padding").classList.toggle("editedCell", false) : null; // painting rating to default
+                message.paintCellToYellow ? this.template.querySelector(".focusedCell").classList.toggle("editedCell", false) : null; // painting rating to default
                 message.cancel ? this.handleCancel(message): null;
                 message.blockButtons ? this.isDisabledEdit = true : null;  //  on/off edit buttons 
                 message.blockButtons == false ? this.isDisabledEdit = false : null;
@@ -54,7 +54,7 @@ export default class CustomCell extends LightningElement {
     handleCancel(message) {
         if (message.id == this.recordId) {
             this.showRating = message.stockRating;
-            this.template.querySelector(".padding").classList.toggle("editedCell", false);   // painting rating to default
+            this.template.querySelector(".focusedCell").classList.toggle("editedCell", false);   // painting rating to default
         }
     }
 
@@ -65,20 +65,10 @@ export default class CustomCell extends LightningElement {
 
     handleChanges(message) {
         if (message.id == this.recordId) {
-            this.template.querySelector(".padding").classList.toggle("editedCell", true);   // painting rating 
+            this.template.querySelector(".focusedCell").classList.toggle("editedCell", true);   // painting rating 
 
             this.editRatingButtonClicked = false;
             this.showRating = message.draft;
-        }
-    }
-
-    changeBackgroundColor() {
-        if (this.editRatingButtonClicked) {
-            this.template.querySelector(".fieldrating").classList.toggle("input-changed", false);   // красим рейтинг 
-            this.template.querySelector(".fieldrating").classList.toggle("yellow-cell", true);
-        } else {
-            this.template.querySelector(".fieldname").classList.toggle("input-changed", false);     // красим имя
-            this.template.querySelector(".fieldname").classList.toggle("yellow-cell", true);
         }
     }
 

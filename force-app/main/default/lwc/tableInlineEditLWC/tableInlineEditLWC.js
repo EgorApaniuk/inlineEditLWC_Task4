@@ -1,14 +1,12 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire} from 'lwc';
 import { refreshApex} from '@salesforce/apex';
 import {getFieldValue, updateRecord} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
-
 import getAccounts from '@salesforce/apex/AccountController.getAccounts';
 import deleteAccount from '@salesforce/apex/AccountController.deleteAccount';
 import ID_FIELD from '@salesforce/schema/Account.Id';
 import NAME_FIELD from '@salesforce/schema/Account.Name';
 import RATING_FIELD from '@salesforce/schema/Account.Rating';
-
 import { publish, MessageContext } from 'lightning/messageService';
 import SAMPLEMC from '@salesforce/messageChannel/SampleMessageChannel__c';
 
@@ -16,7 +14,6 @@ export default class TableInlineEditLWC extends LightningElement {
 
     @wire(MessageContext)
     messageContext;
-
     @track data;
     wiredAccounts;
     receivedId;
@@ -27,13 +24,12 @@ export default class TableInlineEditLWC extends LightningElement {
 
     columns = [
         {label: 'Name', fieldName: 'Name', type: 'text', editable: true},
-        {   label: 'Rating', 
-            fieldName: 'Rating', 
-            type: 'customCell',
-            typeAttributes: {recordId: {fieldName: ID_FIELD.fieldApiName},
-                             value: {fieldName: RATING_FIELD.fieldApiName},
-                             showEdit: true
-                            }
+        {   label: 'Rating', fieldName: 'Rating', type: 'customCell',
+            typeAttributes: {
+                recordId: {fieldName: ID_FIELD.fieldApiName},
+                value: {fieldName: RATING_FIELD.fieldApiName},
+                showEdit: true
+            }
         }, 
         {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', name: 'delete',
         typeAttributes: {iconName: 'utility:delete', title: 'Delete'}}

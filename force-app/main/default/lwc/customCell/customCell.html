@@ -1,5 +1,5 @@
 <template>
-    <span class="slds-grid slds-grid_align-spread padding">
+    <span class="slds-grid slds-grid_align-spread focusedCell">
         <template if:false={editRatingButtonClicked}>
             <div class="slds-truncate rating">{showRating}</div>
         </template>
@@ -13,10 +13,8 @@
             </select>
         </template>
 
-        <!-- <template if:true={showEdit}> -->
         <lightning-button-icon class="editRatingButton" onclick={handleEditRating} icon-name="utility:edit"
             variant="bare" alternative-text="Edit" title="Edit" disabled={isDisabledEdit}>
         </lightning-button-icon>
-        <!-- </template> -->
     </span>
 </template>
