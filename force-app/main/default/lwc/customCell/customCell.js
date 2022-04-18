@@ -5,7 +5,7 @@ import {
     APPLICATION_SCOPE,
     MessageContext
 } from "lightning/messageService";
-import SAMPLEMC from "@salesforce/messageChannel/SampleMessageChannel__c";
+import MAINMC from "@salesforce/messageChannel/MainMessageChannel__c";
 
 export default class CustomCell extends LightningElement {
 
@@ -29,7 +29,7 @@ export default class CustomCell extends LightningElement {
         }
         this.subscription = subscribe(
             this.messageContext,
-            SAMPLEMC,
+            MAINMC,
             message => {
                 message.paintCellToYellow ? this.template.querySelector(".focusedCell").classList.toggle("editedCell", false) : null; // painting rating to default
                 message.cancel ? this.handleCancel(message): null;
@@ -75,7 +75,7 @@ export default class CustomCell extends LightningElement {
         const message = {
             blockButtons: true
         }
-        publish(this.messageContext, SAMPLEMC, message);
+        publish(this.messageContext, MAINMC, message);
         this.editRatingButtonClicked = true; // show rating select, hide rating text
     }
 

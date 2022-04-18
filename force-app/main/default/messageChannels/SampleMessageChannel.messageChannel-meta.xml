@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
-    <masterLabel>SampleMessageChannel</masterLabel>
+    <masterLabel>MainMessageChannel</masterLabel>
     <isExposed>true</isExposed>
-    <description>This is a sample Lightning Message Channel.</description>
+    <description>This is a Lightning Message Channel.</description>
 </LightningMessageChannel>

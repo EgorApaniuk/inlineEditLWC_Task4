@@ -8,7 +8,7 @@ import ID_FIELD from '@salesforce/schema/Account.Id';
 import NAME_FIELD from '@salesforce/schema/Account.Name';
 import RATING_FIELD from '@salesforce/schema/Account.Rating';
 import { publish, MessageContext } from 'lightning/messageService';
-import SAMPLEMC from '@salesforce/messageChannel/SampleMessageChannel__c';
+import MAINMC from '@salesforce/messageChannel/MainMessageChannel__c';
 
 export default class TableInlineEditLWC extends LightningElement {
 
@@ -76,14 +76,14 @@ export default class TableInlineEditLWC extends LightningElement {
             const message = {
                 changes: false,
             };
-            publish(this.messageContext, SAMPLEMC, message);
+            publish(this.messageContext, MAINMC, message);
         } else { 
             const message = {
                 changes: true,
                 id : this.receivedId,
                 draft : this.receivedDraft
             };
-            publish(this.messageContext, SAMPLEMC, message); 
+            publish(this.messageContext, MAINMC, message); 
             this.openFooter = true;
         }
     }
@@ -124,7 +124,7 @@ export default class TableInlineEditLWC extends LightningElement {
             paintCellToYellow: true,
             blockButtons : false
         };
-        publish(this.messageContext, SAMPLEMC, message);
+        publish(this.messageContext, MAINMC, message);
     }
 
     handleCancel(event) {
@@ -136,7 +136,7 @@ export default class TableInlineEditLWC extends LightningElement {
                 stockRating: this.dataArray[this.indexVar].Rating,
                 blockButtons : false
             };
-            publish(this.messageContext, SAMPLEMC, message);
+            publish(this.messageContext, MAINMC, message);
             this.receivedDraft = [];
         } 
     }
