@@ -11,7 +11,6 @@ export default class CustomCell extends LightningElement {
 
     @wire(MessageContext) // what is message context?
     messageContext;
-
     @api recordId;
     @api showRating;
     editRatingButtonClicked = false;
@@ -58,7 +57,7 @@ export default class CustomCell extends LightningElement {
         }
     }
 
-    handleStatusQuo(){
+    handleStatusQuo() {
         this.editRatingButtonClicked = false;
         this.isDisabledEdit = false;
     }
@@ -66,7 +65,6 @@ export default class CustomCell extends LightningElement {
     handleChanges(message) {
         if (message.id == this.recordId) {
             this.template.querySelector(".focusedCell").classList.toggle("editedCell", true);   // painting rating 
-
             this.editRatingButtonClicked = false;
             this.showRating = message.draft;
         }

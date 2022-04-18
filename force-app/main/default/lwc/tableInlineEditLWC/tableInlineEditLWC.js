@@ -28,7 +28,6 @@ export default class TableInlineEditLWC extends LightningElement {
             typeAttributes: {
                 recordId: {fieldName: ID_FIELD.fieldApiName},
                 value: {fieldName: RATING_FIELD.fieldApiName},
-                showEdit: true
             }
         }, 
         {label: 'Delete', fieldName: 'Delete', fixedWidth: 90, type: 'button-icon', name: 'delete',
@@ -43,22 +42,26 @@ export default class TableInlineEditLWC extends LightningElement {
             this.data=data;
             this.dataArray = data;
         }
-        else if (error) {  //ensert toast event here
-            console.log(error);
+        else if (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error loading contacts',
+                    message: error.body.message,
+                    variant: 'error'
+                }) 
+            );
         }
     }
-
 
     handleRefreshTable() { // for immidiate table refresh after deleting row
         refreshApex(this.wiredAccounts);
     }
     
-    handleFocusLost(event){
+    handleFocusLost(event) {
         this.receivedDraft = event.detail.draft;
         this.receivedId = event.detail.id;
         this.indexFind();
         this.checkRating();
-        
     }
     
     indexFind() {
@@ -69,7 +72,7 @@ export default class TableInlineEditLWC extends LightningElement {
 
     checkRating() {
         if (this.receivedDraft == this.dataArray[this.indexVar].Rating                               // NO changes in rating  
-            || (this.dataArray[this.indexVar].Rating == undefined && this.receivedDraft == " ")) {    // or change from None to None 
+            || (this.dataArray[this.indexVar].Rating == undefined && this.receivedDraft == "")) {    // or change from None to None 
             const message = {
                 changes: false,
             };
@@ -85,8 +88,6 @@ export default class TableInlineEditLWC extends LightningElement {
         }
     }
 
-
-
     handleSave(event) {
         const fields = {};
         if (event.detail.draftValues) {
@@ -99,7 +100,6 @@ export default class TableInlineEditLWC extends LightningElement {
             this.openFooter = false;  
         }
         const recordInput = { fields };
-
         updateRecord(recordInput)
             .then(() => {
                 this.dispatchEvent(
@@ -119,9 +119,7 @@ export default class TableInlineEditLWC extends LightningElement {
                         variant: 'error'
                     }) 
                 );
-            });
-
-        
+            }); 
         const message = {
             paintCellToYellow: true,
             blockButtons : false
@@ -145,7 +143,7 @@ export default class TableInlineEditLWC extends LightningElement {
 
 
     
-    handleRowAction(event){
+    handleRowAction(event) {
         const action = event.detail.action;
         const row = event.detail.row;
         action.title == 'Delete' ? this.handleDelete(row) : null;
@@ -167,7 +165,6 @@ export default class TableInlineEditLWC extends LightningElement {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error updating or reloading record',
-                    message: 'error.body.message',
                     variant: 'error'
                 })
             );
