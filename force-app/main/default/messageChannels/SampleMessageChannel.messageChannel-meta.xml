@@ -3,20 +3,4 @@
     <masterLabel>SampleMessageChannel</masterLabel>
     <isExposed>true</isExposed>
     <description>This is a sample Lightning Message Channel.</description>
-    <!-- <lightningMessageFields>
-        <fieldName>recordId</fieldName>
-        <description>This is the record Id that changed</description>
-    </lightningMessageFields>
-    <lightningMessageFields>
-        <fieldName>message</fieldName>
-        <description>This is sample message</description>
-    </lightningMessageFields>
-    <lightningMessageFields>
-        <fieldName>source</fieldName>
-        <description>This is the source message</description>
-    </lightningMessageFields>
-    <lightningMessageFields>
-        <fieldName>recordData</fieldName>
-        <description>The current data representing the record that changed</description>
-    </lightningMessageFields> -->
 </LightningMessageChannel>

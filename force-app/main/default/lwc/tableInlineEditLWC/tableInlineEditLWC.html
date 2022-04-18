@@ -1,18 +1,15 @@
 <template>
-    <div class="slds-m-around_medium">
-        <lightning-button label="включить все едиты" variant="brand" onclick={handleClick}></lightning-button>
-    </div>
-    
-    <c-custom-datatable 
+    <c-custom-datatable class="customDatatable"
         hide-checkbox-column="true" 
-        key-field="=Id" 
+        key-field="Id" 
         data={data} 
         columns={columns}
+        onsave={handleSave}
         onunablebuttonsevent={handleUnableButtonsEvent}
         onfocuslost={handleFocusLost}
         onrowaction={handleRowAction}
         ></c-custom-datatable>  
-        
+
         <template if:true={openFooter}>
             <footer class="slds-modal__footer">
                 <div class="cancel-save">

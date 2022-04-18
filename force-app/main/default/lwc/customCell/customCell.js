@@ -1,33 +1,26 @@
-import { LightningElement, wire, api } from "lwc";
+import { LightningElement, wire } from "lwc";
 import {
     publish,
     subscribe,
-    unsubscribe,
     APPLICATION_SCOPE,
     MessageContext
 } from "lightning/messageService";
-
 import SAMPLEMC from "@salesforce/messageChannel/SampleMessageChannel__c";
-import { getDataConnectorTypes } from "lightning/analyticsWaveApi";
 
 export default class CustomCell extends LightningElement {
-    @api recordId;
-    @api showRating;
-    @api editRatingButtonClicked = false;
-    @api showEdit;
-    isDisabledEdit = false;
-    ratingTempStorage;
-
 
     @wire(MessageContext) // what is message context?
     messageContext;
 
+    recordId;
+    showRating;
+    editRatingButtonClicked = false;
+    isDisabledEdit = false;
+    ratingTempStorage;
     subscription = null;
     receivedMessage;
     isDisabled = false;
     isDisabledUnsb = true;
-
-
 
     subscribeMC() {
         this.isDisabled = true;
@@ -39,44 +32,29 @@ export default class CustomCell extends LightningElement {
             this.messageContext,
             SAMPLEMC,
             message => {
-                console.log("message in subscriber ", message);
+                message.paintCellToYellow ? this.template.querySelector(".padding").classList.toggle("editedCell", false) : null; // painting rating to default
                 message.cancel ? this.handleCancel(message): null;
                 message.blockButtons ? this.isDisabledEdit = true : null;  //  on/off edit buttons 
                 message.blockButtons == false ? this.isDisabledEdit = false : null;
                 message.changes ? this.handleChanges(message) : null;
-                message.changes == false ?  this.handleStatusQuo(): null;
+                message.changes == false ? this.handleStatusQuo(): null;
             },
             { scope: APPLICATION_SCOPE }
         );
     }
 
     connectedCallback() {
-        this.subscribeMC(); // every CustomCell subscribed on MC by default.  ok?
+        this.subscribeMC(); // every CustomCell subscribed on MessageChannel by default.
     }
 
     renderedCallback() {
         this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.showRating : null;
     }
 
-
-
-    unsubscribeMC() {
-        unsubscribe(this.subscription);
-        this.subscription = null;
-        this.isDisabled = false;
-        this.isDisabledUnsb = true;
-    }
-
     handleCancel(message) {
-        console.log("handleCancel activated")
-
         if (message.id == this.recordId) {
-            console.log("handleCancel activated", this.showRating);
-
-            console.log("handleCancel activated", message.stockRating);
-
             this.showRating = message.stockRating;
-            // this.changeBackgroundToDefault()
+            this.template.querySelector(".padding").classList.toggle("editedCell", false);   // painting rating to default
         }
     }
 
@@ -87,13 +65,12 @@ export default class CustomCell extends LightningElement {
 
     handleChanges(message) {
         if (message.id == this.recordId) {
-            console.log("handleChanges in CustomCell");
-            // this.changeBackgroundColor();
+            this.template.querySelector(".padding").classList.toggle("editedCell", true);   // painting rating 
+
             this.editRatingButtonClicked = false;
             this.showRating = message.draft;
         }
     }
-
 
     changeBackgroundColor() {
         if (this.editRatingButtonClicked) {
@@ -105,13 +82,8 @@ export default class CustomCell extends LightningElement {
         }
     }
 
-
-
-
-
     handleEditRating() {
         this.ratingTempStorage = this.showRating;
-        console.log("___ratingTempStorage storages: ",this.ratingTempStorage);
         const message = {
             blockButtons: true
         }

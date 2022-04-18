@@ -46,7 +46,6 @@ export default class TableInlineEditLWC extends LightningElement {
         if (data) {
             this.data=data;
             this.dataArray = data;
-            console.log(JSON.stringify(data));
         }
         else if (error) {  //ensert toast event here
             console.log(error);
@@ -59,9 +58,7 @@ export default class TableInlineEditLWC extends LightningElement {
     }
     
     handleFocusLost(event){
-        console.log("FOCUS LOST EVENT CATCHED IN MAIN PARENT COMPONENT");
         this.receivedDraft = event.detail.draft;
-        console.log("draft = " + this.receivedDraft);
         this.receivedId = event.detail.id;
         this.indexFind();
         this.checkRating();
@@ -72,18 +69,16 @@ export default class TableInlineEditLWC extends LightningElement {
         this.indexVar = this.dataArray.findIndex((array) => {
             return array.Id == this.receivedId;
         });
-        console.log(this.indexVar);
     }
 
     checkRating() {
         if (this.receivedDraft == this.dataArray[this.indexVar].Rating                               // NO changes in rating  
-            || (this.dataArray[this.indexVar].Rating == undefined && this.receivedDraft == "")) {    // or change from None to None 
+            || (this.dataArray[this.indexVar].Rating == undefined && this.receivedDraft == " ")) {    // or change from None to None 
             const message = {
                 changes: false,
             };
             publish(this.messageContext, SAMPLEMC, message);
         } else { 
-            console.log("there ARE changes in rating");    
             const message = {
                 changes: true,
                 id : this.receivedId,
@@ -96,11 +91,17 @@ export default class TableInlineEditLWC extends LightningElement {
 
 
 
-    handleSave() { 
-        console.log("savePusheed");
+    handleSave(event) {
         const fields = {};
-        fields[ID_FIELD.fieldApiName] = this.receivedId;
-        fields[RATING_FIELD.fieldApiName] = this.receivedDraft;
+        if (event.detail.draftValues) {
+            fields[ID_FIELD.fieldApiName] = event.detail.draftValues[0].Id;
+            fields[NAME_FIELD.fieldApiName] = event.detail.draftValues[0].Name;
+            this.template.querySelector(".customDatatable").draftValues=[];
+        } else { 
+            fields[ID_FIELD.fieldApiName] = this.receivedId;
+            fields[RATING_FIELD.fieldApiName] = this.receivedDraft;
+            this.openFooter = false;  
+        }
         const recordInput = { fields };
 
         updateRecord(recordInput)
@@ -117,45 +118,44 @@ export default class TableInlineEditLWC extends LightningElement {
             catch(error => {
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: 'Deletion failed',
+                        title: 'update failure',
                         message: error.body.message,
                         variant: 'error'
-                    })
+                    }) 
                 );
             });
-        this.openFooter = false;  
 
+        
         const message = {
+            paintCellToYellow: true,
             blockButtons : false
         };
         publish(this.messageContext, SAMPLEMC, message);
     }
 
-    handleCancel() {
-        this.openFooter = false;
-        const message = {
-            cancel: true,
-            id: this.receivedId,
-            stockRating: this.dataArray[this.indexVar].Rating,
-            blockButtons : false
-        };
-        publish(this.messageContext, SAMPLEMC, message);
-        this.receivedDraft = [];
-        // changeBackgroudColorToDefault
+    handleCancel(event) {
+        if (event.detail.draftValues != true) {
+            this.openFooter = false;
+            const message = {
+                cancel: true,
+                id: this.receivedId,
+                stockRating: this.dataArray[this.indexVar].Rating,
+                blockButtons : false
+            };
+            publish(this.messageContext, SAMPLEMC, message);
+            this.receivedDraft = [];
+        } 
     }
 
 
     
     handleRowAction(event){
         const action = event.detail.action;
-        const row = event.detail.row;    
-        console.log("handleRowAction", JSON.stringify(action), JSON.stringify(row));
+        const row = event.detail.row;
         action.title == 'Delete' ? this.handleDelete(row) : null;
     }
 
     handleDelete(row) {
-        console.log("handleDelete started");
-        console.log("acc to delete id is: ", row.Id);
         deleteAccount({ accountId: row.Id }).then(() => {
             this.handleRefreshTable();
         }).then(() => {
@@ -176,14 +176,5 @@ export default class TableInlineEditLWC extends LightningElement {
                 })
             );
         });
-    }
-
-
-    
-    handleClick() {
-        const message = {
-            blockButtons : false
-        };
-        publish(this.messageContext, SAMPLEMC, message);
     }
 }
