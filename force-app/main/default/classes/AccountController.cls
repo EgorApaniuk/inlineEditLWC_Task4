@@ -1,14 +1,14 @@
-public with sharing class AccountController {
+public class AccountController {
     
     @AuraEnabled(cacheable=true)
-    public static List<Account> getAccounts(){
-        List<Account> AccountList = new List<Account>();
-        AccountList = [SELECT Id, Name, Rating FROM Account];
-        return AccountList;
+    public static List<Account> getAccounts() {
+        List<Account> accounts = new List<Account>();
+        accounts = [SELECT Id, Name, Rating FROM Account];
+        return accounts;
     }
 
     @AuraEnabled
-    public static void deleteAccount(String accountId){
-        delete[SELECT Id FROM Account WHERE id =: accountId];
+    public static void deleteAccount(String accountId) {
+        delete[SELECT Id FROM Account WHERE Id =: accountId];
     }
 }
