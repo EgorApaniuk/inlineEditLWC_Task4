@@ -4,28 +4,28 @@ public class AccountControllerTest {
     @isTest 
     static void testGetAccount() {
         Account account = new Account();
-        testAccount.Rating = 'Hot';
-        testAccount.Name = 'TestAccount';
+        account.Rating = 'Hot';
+        account.Name = 'TestAccount';
        	insert account; 
         
         Test.startTest();
         List<Account> testArray = AccountController.getAccounts();
         Test.stopTest();
         
-        System.assertEquals(testArray.size(), 1, 'account found');
+        System.assertEquals(testArray.size(), 1, 'account not found');
     }
 
 
     @IsTest 
     static void testDeleteAccount() {
 		Account account = new Account();
-        testAccount.Name = 'test';
-       	testAccount.Rating = 'Hot';
+        account.Name = 'test';
+        account.Rating = 'Hot';
        	insert account;  
         
         Test.startTest();
         List<Account> testArrayA = [SELECT Id FROM Account WHERE Name = 'test'];
-        AccountController.deleteAccount(testArrayB[0].id);
+        AccountController.deleteAccount(testArrayA[0].id);
         List<Account> testArrayB = [SELECT Id FROM Account WHERE Name = 'test'];
         Test.stopTest();
 
