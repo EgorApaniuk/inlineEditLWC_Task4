@@ -1,11 +1,11 @@
-import { LightningElement, wire, api } from "lwc";
+import { LightningElement, wire, api } from 'lwc';
 import {
     publish,
     subscribe,
     APPLICATION_SCOPE,
     MessageContext
-} from "lightning/messageService";
-import MAINMC from "@salesforce/messageChannel/MainMessageChannel__c";
+} from 'lightning/messageService';
+import MAINMC from '@salesforce/messageChannel/MainMessageChannel__c';
 
 export default class CustomCell extends LightningElement {
 
@@ -31,7 +31,7 @@ export default class CustomCell extends LightningElement {
             this.messageContext,
             MAINMC,
             message => {
-                message.paintCellToYellow ? this.template.querySelector(".focusedCell").classList.toggle("editedCell", false) : null; // painting rating to default
+                message.paintCellToYellow ? this.template.querySelector('.focusedCell').classList.toggle('editedCell', false) : null; // painting rating to default
                 message.cancel ? this.handleCancel(message): null;
                 message.blockButtons ? this.isDisabledEdit = true : null;  //  on/off edit buttons 
                 message.blockButtons == false ? this.isDisabledEdit = false : null;
@@ -53,7 +53,7 @@ export default class CustomCell extends LightningElement {
     handleCancel(message) {
         if (message.id == this.recordId) {
             this.showRating = message.stockRating;
-            this.template.querySelector(".focusedCell").classList.toggle("editedCell", false);   // painting rating to default
+            this.template.querySelector('.focusedCell').classList.toggle('editedCell', false);   // painting rating to default
         }
     }
 
@@ -64,7 +64,7 @@ export default class CustomCell extends LightningElement {
 
     handleChanges(message) {
         if (message.id == this.recordId) {
-            this.template.querySelector(".focusedCell").classList.toggle("editedCell", true);   // painting rating 
+            this.template.querySelector('.focusedCell').classList.toggle('editedCell', true);   // painting rating 
             this.editRatingButtonClicked = false;
             this.showRating = message.draft;
         }
@@ -80,12 +80,12 @@ export default class CustomCell extends LightningElement {
     }
 
     handleFocusLostEvent() {
-        const focuslost = new CustomEvent("focuslost", {
+        const focuslost = new CustomEvent('focuslost', {
             composed: true,
             bubbles: true,
             detail: {
-                "id": this.recordId,
-                "draft": this.template.querySelector('.select').value
+                'id': this.recordId,
+                'draft': this.template.querySelector('.select').value
             }
         });
         this.dispatchEvent(focuslost);

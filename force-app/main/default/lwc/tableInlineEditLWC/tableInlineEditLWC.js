@@ -72,7 +72,7 @@ export default class TableInlineEditLWC extends LightningElement {
 
     checkRating() {
         if (this.receivedDraft == this.dataArray[this.indexVar].Rating                               // NO changes in rating  
-            || (this.dataArray[this.indexVar].Rating == undefined && this.receivedDraft == "")) {    // or change from None to None 
+            || (this.dataArray[this.indexVar].Rating == undefined && this.receivedDraft == '')) {    // or change from None to None 
             const message = {
                 changes: false,
             };
@@ -93,7 +93,7 @@ export default class TableInlineEditLWC extends LightningElement {
         if (event.detail.draftValues) {
             fields[ID_FIELD.fieldApiName] = event.detail.draftValues[0].Id;
             fields[NAME_FIELD.fieldApiName] = event.detail.draftValues[0].Name;
-            this.template.querySelector(".customDatatable").draftValues=[];
+            this.template.querySelector('.customDatatable').draftValues=[];
         } else { 
             fields[ID_FIELD.fieldApiName] = this.receivedId;
             fields[RATING_FIELD.fieldApiName] = this.receivedDraft;
